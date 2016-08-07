@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: devicenode
+Description: Description of devicenode
+Version: 0.0.0
+Cflags: -I/usr/local/include
+Libs: -L/usr/local/lib -ldevicenode
+Requires: roscpp sensor_msgs std_msgs roscir tf

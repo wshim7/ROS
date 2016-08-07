@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="euc-kr"?>
+
+<!ELEMENT config (param*)>
+<!ELEMENT param EMPTY>
+	<!ATTLIST param name        CDATA #REQUIRED
+	                value       CDATA #REQUIRED>

@@ -1,0 +1,50 @@
+#ifndef __EROBOT_GYRO_CORE_H__
+#define __EROBOT_GYRO_CORE_H__
+
+#include <reactive/erobot/utility/ERobotFunctionFactory.h>
+#include <reactive/erobot/ERobotDefinition.h>
+#include <reactive/erobot/session/ERobotSerialConnector.h>
+
+#include <roscir/device/common/Gyro.h>
+#include <roscir/env/Config.h>
+
+#include <stdio.h>
+#include <iostream>
+#include <string.h>
+#include <ros/ros.h>
+
+#include <boost/thread/thread.hpp>
+
+using namespace std;
+using namespace reactive::erobot::core;
+
+namespace reactive {
+	namespace erobot {
+		namespace core {
+			class EGyroCore {
+
+			private :
+				ERobotSerialConnector _conn;
+				string _comPort;
+				double _rateResult;
+				double _angleResult;
+				double _init_angle;
+				bool _INIT_FLAG;
+				boost::thread			_this_thread;
+
+			public :
+				EGyroCore();
+				virtual ~EGyroCore();
+
+			private :
+				void init();
+				void run();
+
+			public :
+				CGyroData getData();
+			};
+		}
+	}
+}
+
+#endif /* __EROBOT_GYRO_CORE_H__ */

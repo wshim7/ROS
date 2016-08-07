@@ -1,0 +1,185 @@
+#include "HeadFaceRS232.h"
+
+#include <memory.h>
+#include <reactive/fri/include/RT_FriHeadface.h>
+#include <roscir/env/Config.h>
+#include "SERIAL_ERROR.h"
+
+unsigned short HeadFaceRS232::TargetMappingTable[181] = {600,600,608,615,629,636,643,650,664,678,685,692,706,713,727,734,741,755,762,776,783,790,804,811,825,832,846,853,
+860,874,881,895,902,909,923,930,944,951,958,972,979,993,1000,1007,1021,1028,1042,1049,1063,1070,1077,1091,1098,1112,1119,1126,
+1140,1147,1161,1168,1175,1189,1196,1210,1217,1224,1238,1245,1259,1266,1280,1287,1294,1308,1315,1329,1336,1343,1357,1364,1378,1385,1392,1406,
+1413,1427,1434,1441,1455,1462,1476,1483,1497,1504,1511,1525,1532,1546,1553,1560,1574,1581,1595,1602,1609,1623,1630,1644,1651,1658,1672,1679,
+1693,1700,1714,1721,1728,1742,1749,1763,1770,1777,1791,1798,1812,1819,1826,1840,1847,1861,1868,1875,1889,1896,1910,1917,1931,1938,1945,1959,
+1966,1980,1987,1994,2008,2015,2029,2036,2043,2057,2064,2078,2085,2092,2106,2113,2127,2134,2148,2155,2162,2176,2183,2197,2204,2211,2225,2232,
+2246,2253,2260,2274,2281,2295,2302,2309,2323,2330,2340,2340,2340};
+
+pthread_mutex_t HeadFaceRS232::__motor_mutex = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
+
+HeadFaceRS232::HeadFaceRS232(void)
+{
+	CConfig* config = CConfig::getInstance();
+	string comPort ="";
+	comPort = config->getParamValue("FRI_HEADFACE_COM_PORT");
+	if(comPort.empty()){
+		TTY_HEADFACE = "COM1";
+	}else{
+		TTY_HEADFACE = comPort;
+	}
+	cout<<"Head Com Port: " << TTY_HEADFACE << endl;
+	memset(rs232_snd_buffer_headface, 0, sizeof(unsigned char)*HeadFaceRS232::SND_BUFFER_HEADFACE_SIZE );
+
+
+	m_typeofDevice =config->getParamValueInt( "FACE_DEVICE_TYPE" );
+	if( m_typeofDevice == -1){
+		m_typeofDevice =0;
+		printf("KIBO DEVICE\n");
+
+		serial = new FRI_RS232();
+		serial->setup(TTY_HEADFACE, HeadFaceRS232::BAUD_RATE_HEADFACE);
+		serial->flush();
+
+
+	} else if (m_typeofDevice == 0) {
+		printf("KIBO DEVICE\n");
+
+		serial = new FRI_RS232();
+		serial->setup(TTY_HEADFACE, HeadFaceRS232::BAUD_RATE_HEADFACE);
+		serial->flush();
+
+
+	} else if (m_typeofDevice == 3) {
+		printf("INOLAB UDP\n");
+
+//		serial = new RS232UDP();
+//		serial->setup();
+		//serial->setup(TTY_HEADFACE, HeadFaceRS232::BAUD_RATE_HEADFACE);
+		//serial->flush();
+	}
+
+	else {
+
+		printf("INOLAB or Hitec \n");
+		
+		serial = new FRI_RS232();
+		serial->setup(TTY_HEADFACE, HeadFaceRS232::BAUD_RATE_HEADFACE);
+		serial->flush();
+
+	}
+
+//	InitializeCriticalSection(&critSecFace);
+
+}
+
+HeadFaceRS232::~HeadFaceRS232(void)
+{
+}
+
+int HeadFaceRS232::sendPacketMoveAbsolutePositionSerial( struct Fri_Headface_Cmdfifo *p_FriHeadfaceCmdfifo )
+{
+	// Speed Command
+	rs232_snd_buffer_headface[0] = (unsigned char) (p_FriHeadfaceCmdfifo->motorID) & 0xFF;
+	rs232_snd_buffer_headface[1] =  friheadface_motorCmd_MSG_SPEED;
+	rs232_snd_buffer_headface[2] = (unsigned char) (p_FriHeadfaceCmdfifo->speed)   & 0xFF;
+
+	// Position Command
+	rs232_snd_buffer_headface[3] = (unsigned char) (p_FriHeadfaceCmdfifo->motorID);
+	rs232_snd_buffer_headface[4] =  friheadface_motorCmd_MSG_DEGREE;
+	rs232_snd_buffer_headface[5] = (unsigned char) (p_FriHeadfaceCmdfifo->position)& 0xFF;
+
+	return serial->writeBytes(rs232_snd_buffer_headface, sizeof(unsigned char) * HeadFaceRS232::HEADFACE_PACKETSIZE );
+
+	//rt_spwrite(TTY, &rs232_snd_data[0], sizeof(unsigned char) * 6 );
+
+	//HeadfacefriReportfifo.status=0;
+	//rtf_put( FRI_HEADFACE_REPORTFIFO, &HeadfacefriReportfifo, sizeof(struct Fri_Headface_Reportfifo) );
+}
+
+int HeadFaceRS232::sendMessageToHeadface( Fri_Headface_Cmdfifo *p_HeadfacefriCmdfifo )
+{
+
+	int res=OF_SERIAL_ERROR;
+
+	if(m_typeofDevice == 0){	// KIBO OLD
+		if (p_HeadfacefriCmdfifo->cmd == FRI_HEADFACE_CMDFIFO_CMD_MOVEABSOLUTEPOSTION)
+		{
+//			EnterCriticalSection(&critSecFace);
+			pthread_mutex_lock(&__motor_mutex);
+			res = sendPacketMoveAbsolutePositionSerial(p_HeadfacefriCmdfifo);
+			pthread_mutex_unlock(&__motor_mutex);
+		}
+	}else if(m_typeofDevice == 1){ // HITEC UDP
+		pthread_mutex_lock(&__motor_mutex);
+		res = sendPacketMoveAbsolutePositionPololu(p_HeadfacefriCmdfifo);
+		pthread_mutex_unlock(&__motor_mutex);
+	}else if( ( m_typeofDevice == 2) || ( m_typeofDevice == 3)){	// INOLAB UDP
+		pthread_mutex_lock(&__motor_mutex);
+		if ( p_HeadfacefriCmdfifo->motorID <= 15 )
+		{
+			int offset = p_HeadfacefriCmdfifo->position - 90;
+			p_HeadfacefriCmdfifo->position = 90 - offset;
+		}
+
+		res = sendPacketMoveAbsolutePositionPololu(p_HeadfacefriCmdfifo);
+		pthread_mutex_unlock(&__motor_mutex);
+	}
+
+	return res;
+}
+
+int HeadFaceRS232::sendPacketMoveAbsolutePositionPololu( struct Fri_Headface_Cmdfifo *p_FriHeadfaceCmdfifo )
+{
+	unsigned char command[6];
+//	DWORD bytesTransferred;
+//	BOOL success;
+	unsigned char channel = p_FriHeadfaceCmdfifo->motorID;
+
+	if(p_FriHeadfaceCmdfifo->position > 180){
+		p_FriHeadfaceCmdfifo->position = 180;
+	}else if(p_FriHeadfaceCmdfifo->position < 0 ){
+		p_FriHeadfaceCmdfifo->position = 0;
+	}
+
+
+	unsigned short target = HeadFaceRS232::TargetMappingTable[p_FriHeadfaceCmdfifo->position] * 4;
+	unsigned short speed =  p_FriHeadfaceCmdfifo->speed;
+
+
+	if ( m_typeofDevice == 3 ) // UDP
+	{
+
+		// 5 BYTE
+		unsigned short id =  p_FriHeadfaceCmdfifo->motorID;
+		memcpy(&command[0], (const void *)&id, sizeof( short ) );
+		memcpy(&command[2], (const void *)&target, sizeof( short ) );
+		memcpy(&command[4], (const void *)&speed, sizeof( short ) );
+
+		serial->writeBytes(command, 6);
+		//printf("Motor ID = %d, Pos = %d, speed = %d\n", id, target, speed);
+	} else {
+
+		// set speed the command.
+		if(p_FriHeadfaceCmdfifo->speed != 0)
+		{
+			command[0] = 0x87;
+			command[1] = channel;
+			command[2] = speed & 0x7F;
+			command[3] = (speed >> 7) & 0x7F;
+
+			// Send the command to the device.
+
+			serial->writeBytes(command, sizeof(unsigned char) * HeadFaceRS232::HEADFACE_PACKETSIZE_POLOLU);
+
+			command[0] = 0x84;
+			command[1] = channel;
+			command[2] = target & 0x7F;
+			command[3] = (target >> 7) & 0x7F;
+			//		cout << "[Received HEX] ID: " << (int)command[1] << " target & 0x7F: " << (int)command[2] << " (target >> 7) & 0x7F: " << (int)command[3] << endl;
+			// Send the command to the device.
+
+			serial->writeBytes(command, sizeof(unsigned char) * HeadFaceRS232::HEADFACE_PACKETSIZE_POLOLU);
+		}
+
+	}
+
+	return 1;
+}

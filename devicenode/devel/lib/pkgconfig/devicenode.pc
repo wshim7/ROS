@@ -1,0 +1,8 @@
+prefix=/home/swg/catkin_ws/src/devicenode/devel
+
+Name: devicenode
+Description: Description of devicenode
+Version: 0.0.0
+Cflags: -I/home/swg/catkin_ws/src/devicenode/include
+Libs: -L/home/swg/catkin_ws/src/devicenode/devel/lib -ldevicenode
+Requires: roscpp sensor_msgs std_msgs roscir tf

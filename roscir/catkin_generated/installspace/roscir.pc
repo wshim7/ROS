@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: roscir
+Description: Description of roscir
+Version: 0.0.0
+Cflags: -I/usr/local/include -I/usr/include
+Libs: -L/usr/local/lib -lroscir -l:/usr/lib/x86_64-linux-gnu/libtinyxml.so
+Requires: roscpp std_msgs sensor_msgs cir_msgs

@@ -1,0 +1,8 @@
+prefix=/home/swg/catkin_ws/src/roscir/devel
+
+Name: roscir
+Description: Description of roscir
+Version: 0.0.0
+Cflags: -I/home/swg/catkin_ws/src/roscir/src -I/usr/include
+Libs: -L/home/swg/catkin_ws/src/roscir/devel/lib -lroscir -l:/usr/lib/x86_64-linux-gnu/libtinyxml.so
+Requires: roscpp std_msgs sensor_msgs cir_msgs

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!-- ========================================================== -->
+	<!-- Initial Variables for FRI Robot Configuration -->
+	<!-- Please set your parameter according to your computer configuration -->
+	<!-- ========================================================== -->
+<config>
+	<robot type="FRI">
+		<parts name = "headface">
+			<device name="MIN_SPEED" value="0"/><!--"0" -->
+			<device name="MAX_SPEED" value="100"/><!--"100" -->
+			<device name="MIN_EYEBROW_R_ROLL_00" value="75"/><!--"90-15" -->
+			<device name="MAX_EYEBROW_R_ROLL_00" value="105"/><!--90+15 -->
+			<device name="MIN_EYEBROW_L_ROLL_01" value="75"/><!--"90-15 -->
+			<device name="MAX_EYEBROW_L_ROLL_01" value="105"/><!--"90+15" -->
+			<device name="MIN_EYEBROW_R_UD_02" value="80"/><!--"90-10" -->
+			<device name="MAX_EYEBROW_R_UD_02" value="100"/><!--"90+10" -->
+			<device name="MIN_EYEBROW_L_UD_03" value="80"/><!--"90-10" -->
+			<device name="MAX_EYEBROW_L_UD_03" value="100"/><!--"90+10" -->
+			<device name="MIN_UPPEREYELID_R_UD_04" value="55"/><!--"90-35" -->
+			<device name="MAX_UPPEREYELID_R_UD_04" value="125"/><!--"90+35" -->
+			<device name="MIN_UPPEREYELID_L_UD_05" value="45"/><!--"90-35" -->
+			<device name="MAX_UPPEREYELID_L_UD_05" value="135"/><!--"90+35" -->
+			<device name="MIN_LOWEREYELID_R_UD_06" value="55"/><!--"90-25" -->
+			<device name="MAX_LOWEREYELID_R_UD_06" value="125"/><!--"90+25" -->
+			<device name="MIN_LOWEREYELID_L_UD_07" value="55"/><!--"90-25" -->
+			<device name="MAX_LOWEREYELID_L_UD_07" value="125"/><!--"90+25" -->
+			<device name="MIN_PUPIL_R_UD_08" value="65"/><!--"90-25" -->
+			<device name="MAX_PUPIL_R_UD_08" value="115"/><!--"90+25" -->
+			<device name="MIN_PUPIL_L_UD_09" value="65"/><!--"90-25" -->
+			<device name="MAX_PUPIL_L_UD_09" value="115"/><!--"90+25" -->
+			<device name="MIN_PUPIL_R_RL_10" value="55"/><!--"90-35" -->
+			<device name="MAX_PUPIL_R_RL_10" value="125"/><!--"90+35" -->
+			<device name="MIN_PUPIL_L_RL_11" value="55"/><!--"90-35" -->
+			<device name="MAX_PUPIL_L_RL_11" value="125"/><!--"90+35" -->
+			<device name="MIN_LIPSUPPER_R_12" value="30"/><!--"90-60" -->
+			<device name="MAX_LIPSUPPER_R_12" value="150"/><!--"90+60" -->
+			<device name="MIN_LIPSUPPER_L_13" value="30"/><!--"90-60" -->
+			<device name="MAX_LIPSUPPER_L_13" value="150"/><!--"90+60" -->
+			<device name="MIN_LIPSLOWER_R_14" value="30"/><!--"90-60" -->
+			<device name="MAX_LIPSLOWER_R_14" value="150"/><!--"90+60" -->
+			<device name="MIN_LIPSLOWER_L_15" value="30"/><!--"90-60" -->
+			<device name="MAX_LIPSLOWER_L_15" value="150"/><!--"90+60" -->
+			<device name="MIN_LIPSCENTER_16" value="60"/><!--"80-20" -->
+			<device name="MAX_LIPSCENTER_16" value="135"/><!--"80+55" -->
+		</parts>
+		<parts name = "pantilt">
+			<device name="MIN_PAN_DEGREE" value="-60.0"/>
+			<device name="MAX_PAN_DEGREE" value="60.0"/>
+			<device name="MIN_TILT_DEGREE" value="-20.0"/>
+			<device name="MAX_TILT_DEGREE" value="10.0"/>
+			<device name="MIN_PANTILT_VELOCITY" value="0.0"/>
+			<device name="MAX_PANTILT_VELOCITY" value="100.0"/>
+		</parts>
+		<parts name = "rollbend">
+			<device name="MIN_ROLLBEND_VELOCITY" value="0"/>
+			<device name="MAX_ROLLBEND_VELOCITY" value="100"/>
+			<!--device name="MIN_ROLL_DEGREE" value="-13.0"/-->
+			<!--device name="MAX_ROLL_DEGREE" value="13.0"/-->
+			<device name="MIN_ROLL_DEGREE" value="-20.0"/>
+			<device name="MAX_ROLL_DEGREE" value="20.0"/>
+			<device name="MIN_BEND_DEGREE" value="-20.0"/>
+			<device name="MAX_BEND_DEGREE" value="20.0"/>
+		</parts>
+	</robot>
+	
+	
+	<robot type="KIBO">
+		<parts name = "headface">
+			<device name="MIN_SPEED" value="0"/><!--"0" -->
+			<device name="MAX_SPEED" value="100"/><!--"100" -->
+			<device name="MIN_PUPIL_R_UD" value="-15"/>
+			<device name="MAX_PUPIL_R_UD" value="15"/>
+			<device name="MIN_PUPIL_R_LR" value="-15"/>
+			<device name="MAX_PUPIL_R_LR" value="15"/>
+			<device name="MIN_PUPIL_L_UD" value="-15"/>
+			<device name="MAX_PUPIL_L_UD" value="15"/>
+			<device name="MIN_PUPIL_L_LR" value="-15"/>
+			<device name="MAX_PUPIL_L_LR" value="15"/>
+			<device name="MIN_EYEBROW_R" value="-60"/>
+			<device name="MAX_EYEBROW_R" value="60"/>
+			<device name="MIN_EYEBROW_L" value="-60"/>
+			<device name="MAX_EYEBROW_L" value="60"/>
+			<device name="MIN_UPPEREYELID_R_UD" value="0"/>
+			<device name="MAX_UPPEREYELID_R_UD" value="20"/>
+			<device name="MIN_UPPEREYELID_L_UD" value="-20"/> 
+			<device name="MAX_UPPEREYELID_L_UD" value="0"/>
+			<device name="MIN_LOWEREYELID_R_UD" value="-50"/>	
+			<device name="MAX_LOWEREYELID_R_UD" value="10"/>
+			<device name="MIN_LOWEREYELID_L_UD" value="-50"/>
+			<device name="MAX_LOWEREYELID_L_UD" value="10"/>
+			<device name="MIN_LIPSUPPER_R" value="-60"/>
+			<device name="MAX_LIPSUPPER_R" value="60"/>
+			<device name="MIN_LIPSUPPER_L" value="-60"/>
+			<device name="MAX_LIPSUPPER_L" value="60"/>
+			<device name="MIN_LIPSLOWER_R" value="-60"/>
+			<device name="MAX_LIPSLOWER_R" value="60"/>
+			<device name="MIN_LIPSLOWER_L" value="-60"/>
+			<device name="MAX_LIPSLOWER_L" value="60"/>
+			<device name="MIN_LIPSCENTER" value="-10"/>
+			<device name="MAX_LIPSCENTER" value="70"/>
+		</parts>
+		<parts name = "pantilt">
+			<device name="MIN_PAN_DEGREE" value="-40.0"/>
+			<device name="MAX_PAN_DEGREE" value="40.0"/>
+			<device name="MIN_TILT_DEGREE" value="-25.0"/>
+			<device name="MAX_TILT_DEGREE" value="55.0"/>
+			<device name="MIN_PANTILT_VELOCITY" value="0.0"/>
+			<device name="MAX_PANTILT_VELOCITY" value="100.0"/>
+		</parts>
+	</robot>
+
+	<robot type="MERO">
+		<parts name = "headface">
+			<device name="MIN_FACE_SPEED" value="-1.0"/>
+			<device name="MAX_FACE_SPEED" value="100.0"/>
+			<device name="MIN_EYEBRROW_UD_DEGREE" value="-39.0"/>
+			<device name="MAX_EYEBRROW_UD_DEGREE" value="39.0"/>
+			<device name="MIN_EYEBRROW_CW_DEGREE" value="-29.0"/>
+			<device name="MAX_EYEBRROW_CW_DEGREE" value="29.0"/>
+			<device name="MIN_EYELID_R_UD_DEGREE" value="-39"/>
+			<device name="MAX_EYELID_R_UD_DEGREE" value="39"/>
+			<device name="MIN_EYELID_L_UD_DEGREE" value="-39.0"/>
+			<device name="MAX_EYELID_L_UD_DEGREE" value="39.0"/>
+			<device name="MIN_EYELID_R_CW_DEGREE" value="-80.0"/>
+			<device name="MAX_EYELID_R_CW_DEGREE" value="80.0"/>
+			<device name="MIN_PUPIL_UD_DEGREE" value="-27.0"/>
+			<device name="MAX_PUPIL_UD_DEGREE" value="27.0"/>
+			<device name="MIN_PUPIL_LR_DEGREE" value="-27.0"/>
+			<device name="MAX_PUPIL_LR_DEGREE" value="27.0"/>
+			<device name="MIN_LIP_U_CW_DEGREE" value="-55.0"/>
+			<device name="MAX_LIP_U_CW_DEGREE" value="55.0"/>
+			<device name="MIN_LIP_L_CW_DEGREE" value="-55.0"/>
+			<device name="MAX_LIP_L_CW_DEGREE" value="55.0"/>
+			<device name="MIN_LIP_C_WP" value="0"/>
+			<device name="MAX_LIP_C_WP" value="37.0"/>
+		</parts>
+		<parts name = "pantilt">
+			<device name="MIN_PAN_DEGREE" value="-85.0"/>
+			<device name="MAX_PAN_DEGREE" value="85.0"/>
+			<device name="MIN_TILT_DEGREE" value="-15.0"/>
+			<device name="MAX_TILT_DEGREE" value="15.0"/>
+			<device name="MIN_PANTILT_VELOCITY" value="-1.0"/>
+			<device name="MAX_PANTILT_VELOCITY" value="100.0"/>
+		</parts>
+		<parts name = "rollbend">
+			<device name="MIN_ROLLBEND_VELOCITY" value="-1.0"/>
+			<device name="MAX_ROLLBEND_VELOCITY" value="100"/>
+			<device name="MIN_ROLL_DEGREE" value="-30.0"/>
+			<device name="MAX_ROLL_DEGREE" value="30.0"/>
+			<device name="MIN_BEND_DEGREE" value="-15.0"/>
+			<device name="MAX_BEND_DEGREE" value="30.00"/>
+		</parts>
+	</robot>
+
+</config>

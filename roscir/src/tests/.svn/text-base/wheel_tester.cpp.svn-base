@@ -1,0 +1,95 @@
+/*
+ * pantilt_tester.cpp
+ *
+ *  Created on: 2014. 1. 16.
+ *      Author: msyoo
+ */
+#include <ros/ros.h>
+#include <roscir/device/client/CWheelClient.h>
+#ifdef WIN32
+	#include <conio.h>
+#else
+	#include <roscir/util/getch.h>
+#endif /* WIN32 */
+void threadFunc() {
+	CWheel* wheel = CWheelClientProxy::newInstance();
+	double velX, velY;
+	int result = 0;
+
+	while(ros::ok()) {
+		cout << "Waiting Type key 'i, k, j, l, u, o, t,f,g,h, s, c ' " << endl;
+		char c = getch();
+		cout << "You typed [[ "<< c << " ]]" <<endl;
+
+		if(c=='i') {
+			velX = 350;
+			velY = 0;
+			wheel->moveByVelocityXYT(velX, velY, 0);
+		} else if(c=='k') {
+			velX = -350;
+			velY = 0;
+			wheel->moveByVelocityXYT(velX, velY, 0);
+		} else if(c=='j') {
+			velX = 0;
+			velY = 350;
+			wheel->moveByVelocityXYT(velX, velY, 0);
+		} else if(c=='l') {
+			velX = 0;
+			velY = -350;
+			wheel->moveByVelocityXYT(velX, velY, 0);
+		} else if(c=='u') {
+			velX = 0;
+			velY = -50;
+			wheel->moveByVelocityXYT(0,0, velY);
+		} else if(c=='o') {
+			velX = 0;
+			velY = 50;
+			wheel->moveByVelocityXYT(0, 0, velY);
+		} else if(c=='s') {
+			velX = 0;
+			velY = 0;
+			wheel->stop();
+		}  else if(c=='x') {
+			wheel->stop();
+		} else if(c=='t') {
+			wheel->moveToDeltaXYTheta(100, 0, 0, 30);
+			result = wheel->waitmoveToDeltaFinished();
+			cout << "moveToDeltaXYTheta result : " << result << endl;
+		} else if(c=='g') {
+			wheel->moveToDeltaXYTheta(-100, 0, 0, 30);
+			result = wheel->waitmoveToDeltaFinished();
+			cout << "moveToDeltaXYTheta result : " << result << endl;
+		} else if(c=='f') {
+			wheel->moveToDeltaXYTheta(0, 100, 0, 30);
+			result = wheel->waitmoveToDeltaFinished();
+			cout << "moveToDeltaXYTheta result : " << result << endl;
+		} else if(c=='h') {
+			wheel->moveToDeltaXYTheta(0, -100, 0, 30);
+			result = wheel->waitmoveToDeltaFinished();
+			cout << "moveToDeltaXYTheta result : " << result << endl;
+		} else if(c=='q') {
+			for(int i=0; i<50; i++) {
+				wheel->moveToDeltaXYTheta(0, 300, 0, 30);
+				wheel->waitmoveToDeltaFinished();
+				wheel->moveToDeltaXYTheta(0, -300, 0, 30);
+				wheel->waitmoveToDeltaFinished();
+			}
+		}
+
+		else if(c=='c') {
+			break;
+		}
+	}
+}
+
+int main(int argc, char **argv) {
+	ros::init(argc, argv, "TestWheel");
+	boost::thread t( threadFunc);
+	ros::spin();
+	return 1;
+
+}
+
+
+
+

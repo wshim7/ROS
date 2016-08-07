@@ -1,0 +1,174 @@
+#include "ERobotSerialConnector.h"
+
+using namespace reactive::erobot::core;
+
+ERobotSerialConnector::ERobotSerialConnector() {
+	_bInited = FALSE;
+	_fd = -1;
+}
+
+ERobotSerialConnector::~ERobotSerialConnector() {
+
+}
+
+void ERobotSerialConnector::setup(string portName, int baudrate) {
+
+	_bInited = FALSE;
+	
+	/*
+	 *  open serial port
+	 */
+	hComm = CreateFileA( portName.c_str(),
+		GENERIC_READ|GENERIC_WRITE,
+		0,
+		0,
+		OPEN_EXISTING,
+		FILE_ATTRIBUTE_NORMAL,	// non-overlapped    //FILE_FLAG_OVERLAPPED
+		0
+		);
+
+	if( hComm == INVALID_HANDLE_VALUE ) {
+		printf("ofSerial : unable to open port \n");
+	}
+
+	/*
+	 * setup up Serial
+	 */
+	char		buffer[80];
+	COMMCONFIG	cfg;
+	DWORD		cfgSize;
+
+	cfgSize		= sizeof(cfg);
+	GetCommConfig( hComm, &cfg, &cfgSize );
+	sprintf(buffer,"baud=%d parity=N data=8 stop=1",baudrate);
+
+
+	if( !BuildCommDCBA( buffer, &cfg. dcb ) ) {	
+		printf("ofSerial: unable to build comm dcb; (%s)\n",buffer);
+	}
+	if( !SetCommState( hComm, &cfg.dcb ) ){
+		printf("ofSerial: Can't set comm state\n");
+	}	
+	
+	COMMTIMEOUTS timeOut;
+	GetCommTimeouts( hComm, &timeOut );
+	timeOut.ReadIntervalTimeout			= MAXDWORD;
+	timeOut.ReadTotalTimeoutConstant	= 200;
+	timeOut.ReadTotalTimeoutMultiplier	= 0;
+	//timeOut.WriteTotalTimeoutConstant = MAXDWORD;
+	//timeOut.WriteTotalTimeoutMultiplier = MAXDWORD;
+	SetCommTimeouts( hComm, &timeOut );
+	//printf("[ERobotSerialConnector] open com port success : %s " , portName);
+
+	_bInited = TRUE;
+}
+
+int ERobotSerialConnector::readBytes( unsigned char* buffer, int length ) {
+	
+	if (!_bInited){
+		printf("ofSerial: serial not inited in readBytes \n");
+		//return OF_SERIAL_ERROR;
+		return 0;
+	}
+
+	/*
+	DWORD nRead = 0;
+	int readCount = 0;
+	while(length > readCount) {
+		if (!ReadFile(hComm, buffer+readCount, (length-readCount) ,&nRead, 0)){
+			printf("ofSerial: trouble reading from port in readBytes \n");
+			return;
+		} else {
+			readCount += nRead;
+			printf("read fail!!! :  %d \n" , nRead);
+		}
+	}
+	*/
+
+	DWORD nRead = 0;
+	if (!ReadFile(hComm,buffer,length,&nRead,0)){
+		printf("ofSerial: trouble reading from port in readBytes \n");
+		return 0;
+	} else {
+//		printf("ofSerial readbyte size : %d \n", nRead);
+		return nRead;
+	}
+}
+
+bool ERobotSerialConnector::writeBytes( unsigned char* buffer, int length ) {
+	
+	if (!_bInited){
+		//printf("ofSerial: serial not inited in readBytes \n");
+		return FALSE;
+	}
+
+	DWORD written;
+	if(!WriteFile(hComm, buffer, length, &written,0)){
+		return FALSE;
+	} else {
+		//printf("ofSerial writeBytes size : %d \n", written);
+	}
+	
+	return TRUE;
+
+	/*
+	BOOL fRes = FALSE;
+	DWORD dwRes;
+	OVERLAPPED osWrite = {0};
+
+	if (!_bInited){
+		//printf("ofSerial: serial not inited in readBytes");
+		//return OF_SERIAL_ERROR;
+		return FALSE;
+	}
+
+	osWrite.hEvent	= CreateEvent( NULL, TRUE, FALSE, NULL );
+	if(osWrite.hEvent == NULL) {
+		//printf("ofSerial: error creating overlapped event in readBytes");
+		return FALSE;
+	}
+
+
+	DWORD dwWritten;
+	if( !WriteFile(hComm, buffer, length, &dwWritten, 0) ){
+	
+		if (GetLastError() != ERROR_IO_PENDING) { 
+			// WriteFile failed, but isn't delayed. Report error and abort.
+			fRes = FALSE;
+		} else {
+			// Write is pending.
+			dwRes = WaitForSingleObject(osWrite.hEvent, INFINITE);
+			switch(dwRes) {	
+				// OVERLAPPED structure's event has been signaled. 
+				case WAIT_OBJECT_0:
+					if (!GetOverlappedResult(hComm, &osWrite, &dwWritten, FALSE)) {
+						fRes = FALSE;
+					} else {
+						// Write operation completed successfully.
+						fRes = TRUE;
+					}
+					break;
+
+				default:
+					// An error has occurred in WaitForSingleObject.
+					// This usually indicates a problem with the
+					// OVERLAPPED structure's event handle.
+					fRes = FALSE;
+					break;
+			}
+		}	
+	} else {
+		// WriteFile completed immediately.
+		fRes = TRUE;
+	}
+
+	CloseHandle(osWrite.hEvent);
+	return fRes;
+	*/
+}
+
+void ERobotSerialConnector::resetConnection() {
+	//cout << "ERobotSerialConnector::resetConnection" << endl;
+	PurgeComm(hComm, PURGE_TXCLEAR | PURGE_RXCLEAR);		// non-overlapped
+	//PurgeComm(hComm, PURGE_TXCLEAR | PURGE_RXCLEAR | PURGE_TXABORT | PURGE_RXABORT); // overlapped
+}

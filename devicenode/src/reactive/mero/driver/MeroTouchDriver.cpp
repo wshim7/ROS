@@ -1,0 +1,245 @@
+#include "MeroTouchDriver.h"
+#include <roscir/env/Config.h>
+
+using namespace std;
+using namespace reactive::mero::driver;
+
+pthread_mutex_t MeroTouchDriver::__comunicate_mutex = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
+
+MeroTouchDriver::MeroTouchDriver() {
+	memset(_this_touch_data, 0x00, sizeof(unsigned short) * MERO_TOUCH_DATACOUNT);
+
+//	InitializeCriticalSection(&comunicate);
+
+	utility = MeroFunctionFactory::getInstance();
+
+	connector = MeroLEDTouchConnector::getInstance();
+}
+
+MeroTouchDriver::~MeroTouchDriver() {
+
+}
+
+MeroTouchDriver* MeroTouchDriver::getInstance()
+{
+	static MeroTouchDriver thisInstance;
+	cout << "[MeroTouchDriver.getInstance] : Create Sole Instance(MeroTouchDriver).." << endl;
+	return &thisInstance;
+}
+
+
+void MeroTouchDriver::checkTouchButtonCommandPacket(unsigned char command, unsigned char* buffer) {
+	int nCheckSumSize	= MERO_CHECKSUM_PACKET_SIZE;
+	int nBodySize		= MERO_COMMON_HEADER_PACKET_SIZE + nCheckSumSize;
+
+	memset(buffer, 0x00, nBodySize);
+
+	unsigned char checkSUM = 0x0E;  // ~command
+
+	buffer[0] = MERO_DEVICE_TOUCHBUTTON_ID;
+	buffer[1] = MERO_DEVICE_TOUCHBUTTON_SUB_ID_1;
+	buffer[2] = MERO_DEVICE_TOUCHBUTTON_SUB_ID_2;
+	buffer[3] = command;
+	buffer[4] = checkSUM;
+}
+
+void MeroTouchDriver::addTouchButtonCommandPacket(unsigned char command, unsigned char* buffer, const int startIndex) {
+
+	unsigned char checkSUM = 0x0E;  // ~command
+
+	buffer[startIndex]		= MERO_DEVICE_TOUCHBUTTON_ID;
+	buffer[startIndex+1]	= MERO_DEVICE_TOUCHBUTTON_SUB_ID_1;
+	buffer[startIndex+2]	= MERO_DEVICE_TOUCHBUTTON_SUB_ID_2;
+	buffer[startIndex+3]	= command;
+	buffer[startIndex+4]	= checkSUM;
+}
+
+void MeroTouchDriver::addTouchButtonErrorPacket(unsigned char command, unsigned char *buffer, const int touchId, const int startIndex)
+{
+	unsigned char checkSUM = 0x0E;  // ~command
+
+	buffer[startIndex]		= MERO_DEVICE_TOUCHBUTTON_ID;
+	buffer[startIndex+1]	= MERO_DEVICE_TOUCHBUTTON_SUB_ID_1;
+	buffer[startIndex+2]	= MERO_DEVICE_TOUCHBUTTON_SUB_ID_2;
+	buffer[startIndex+3]	= command;
+	buffer[startIndex+4]	= touchId;
+	buffer[startIndex+5]	= checkSUM;
+}
+
+bool MeroTouchDriver::isTouchErrorPacket(unsigned char *buffer)
+{
+	if( (buffer[0] != 0x01)
+		|| (buffer[1] != 0xF1)
+		|| (buffer[2] != 0xF1)
+		|| (buffer[3] != 0x0E) ) {
+			return false;
+	}
+	return true;
+}
+
+int MeroTouchDriver::parseAndSetTouchButtonDataPacket(int dataPacketSize, unsigned char* dataPacket) {
+	
+	unsigned char checksum = utility->getChecksum(dataPacket, dataPacketSize-1);
+
+	if( (dataPacket[0] != 0x01)
+		|| (dataPacket[1] != 0xF1)
+		|| (dataPacket[2] != 0xF1)
+		|| (dataPacket[3] != 0xF6) ) {
+			cout << "[MeroTouchDriver] res packet header is different! " << endl;
+			cout << "\t required packet 01 F1 F1 F6 " << endl;
+			printf("\t received packet %02x %02x %02x %02x \n" ,dataPacket[0],dataPacket[1],dataPacket[2],dataPacket[3] );
+			return RETURN_FAILED;
+	}
+
+	if (checksum != dataPacket[dataPacketSize-1]) {
+		cout << "[MeroTouchDriver] checksum check fail... " << endl;
+		return RETURN_FAILED;
+	}
+
+	int nBuffHeaderOff = 4;
+	for (int i = nBuffHeaderOff ; i < dataPacketSize-1 ; i++) {
+		_this_touch_data[i - nBuffHeaderOff] = (unsigned short) dataPacket[i];
+	}
+	return RETURN_SUCCESS;
+}
+
+int MeroTouchDriver::parseAndSetTouchButtonDataPacket(int dataPacketSize, unsigned char* dataPacket, const int startIndex) {
+	
+	unsigned char checksum = utility->getChecksumWithStartIndex(dataPacket, dataPacketSize-1, startIndex);
+	
+	if (checksum != dataPacket[startIndex+dataPacketSize-1]) {
+		cout << "[MeroTouchDriver] checksum check fail... " << endl;
+		return RETURN_FAILED;
+	}
+
+	int nBuffHeaderOff = startIndex+4;
+	for (int i = 0 ; i < dataPacketSize-1 ; i++) {
+		_this_touch_data[i] = (unsigned short) dataPacket[i+nBuffHeaderOff];
+	}
+	return RETURN_SUCCESS;
+}
+
+void MeroTouchDriver::getTouchButtonValue(unsigned short *data, int nDataSize) {
+
+//	EnterCriticalSection(&comunicate);
+	pthread_mutex_lock(&__comunicate_mutex);
+	updateMeroTouch();
+
+	for (int i = 0 ; i < nDataSize; i++) {
+		data[i] = _this_touch_data[i];
+	}
+//	LeaveCriticalSection(&comunicate);
+	pthread_mutex_unlock(&__comunicate_mutex);
+}
+
+bool MeroTouchDriver::isTouchButtonPacket(unsigned char* buffer, const int startIndex) {
+	if( (buffer[startIndex] != 0x01)
+		|| (buffer[startIndex+1] != 0xF1)
+		|| (buffer[startIndex+2] != 0xF1)
+		|| (buffer[startIndex+3] != 0xF6) ) {
+			return false;
+	}
+	return true;
+}
+
+void MeroTouchDriver::updateMeroTouch()
+{
+	int readDataSize = utility->getReadPacketSize(MERO_TYPE_TOUCHBUTTON);
+	unsigned char* sendPacket = new unsigned char[MERO_COMMON_HEADER_PACKET_SIZE +MERO_CHECKSUM_PACKET_SIZE];
+	unsigned char* receivePacket = new unsigned char[readDataSize];
+
+	checkTouchButtonCommandPacket(MERO_COMMAND_TOUCHBUTTON_GET_DATA, sendPacket);
+//	printf("sendPacket: ");
+//	for(int i=0 ; i<MERO_COMMON_HEADER_PACKET_SIZE +MERO_CHECKSUM_PACKET_SIZE ; i++) {
+//		printf("%02x ", sendPacket[i]);
+//	}
+//	printf("\n");
+
+	connector->writeBytes( sendPacket, 5 );
+
+	int readSize = connector->readBytes(receivePacket,readDataSize);
+
+	if( readSize < readDataSize) {
+		printf("response size is different... [_updateEtc] skip!!!!!  %d \n", readSize);
+		printf("receivePacket: ");
+		for(int i=0 ; i<readSize ; i++) {
+			printf("%02x ", receivePacket[i]);
+		}
+		printf("\n");
+		return;
+	}
+
+	if(isTouchButtonPacket(receivePacket,0)) {
+		int touchReadPacketSize	= utility->getReadPacketSize(MERO_TYPE_TOUCHBUTTON);
+		if(RETURN_SUCCESS == parseAndSetTouchButtonDataPacket(touchReadPacketSize, receivePacket)) {
+			//printf("Received !!!!!!!!!!!!! parseAndSetTouchButtonDataPacket\n");
+		}else{
+			printf("parseAndSetTouchButtonDataPacket Error \n", readSize);
+		}
+	}
+}
+
+int MeroTouchDriver::parseAndSetTouchErrorDataPacket(int dataPacketSize, unsigned char *dataPacket)
+{
+	int nBuffHeaderOff = 4;
+	int nByteLen  = 1;
+	int nByteSize = 1;
+
+	return MeroFunctionFactory::getInstance()->byte2Int(dataPacket+nBuffHeaderOff+nByteLen,nByteSize);
+}
+
+int MeroTouchDriver::detectingError(int touchID)
+{
+
+	cout << "MeroTouchDriver::detectingError id : " << touchID << endl;
+	int result = -1;
+	int sendPacketSize = 6;
+	unsigned char* sendPacket = new unsigned char[sendPacketSize];
+
+	memset(sendPacket, 0x00, sendPacketSize);
+	addTouchButtonErrorPacket(MERO_COMMAND_TOUCHBUTTON_DETECTING_ERROR,sendPacket,touchID, 0);
+
+//	EnterCriticalSection(&comunicate);
+	pthread_mutex_lock(&__comunicate_mutex);
+	connector->writeBytes(sendPacket,sendPacketSize);
+
+	printf("\n MeroTouchDriver::detectingError send packet : ");
+	for(int i=0 ; i<sendPacketSize ; i++) {
+		printf("%02x ", sendPacket[i]);
+	}
+	printf("\n");
+
+
+	int receivePacketSize = 7;
+	unsigned char* receivePacket = new unsigned char[receivePacketSize];
+	memset(receivePacket, 0x00, receivePacketSize);
+
+	int real = connector->readBytes(receivePacket,receivePacketSize);
+
+	printf("\n MeroTouchDriver::detectingError read packet : need == 7 : real == %d",real);
+	for(int i=0 ; i<real ; i++) {
+		printf("%02x ", receivePacket[i]);
+	}
+	printf("\n");
+
+	if(real < receivePacketSize) {
+//		LeaveCriticalSection(&comunicate);
+		pthread_mutex_unlock(&__comunicate_mutex);
+		return -1;
+	}
+
+	if(isTouchErrorPacket(receivePacket)) {
+		result = parseAndSetTouchErrorDataPacket(receivePacketSize,receivePacket);
+	} else {
+		result = -1;
+	}
+	pthread_mutex_unlock(&__comunicate_mutex);
+	return result;
+}
+
+
+
+
+
+
+

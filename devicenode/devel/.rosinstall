@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/swg/catkin_ws/src/devicenode/devel/setup.sh

@@ -1,0 +1,41 @@
+#ifndef __EROBOT_SERIAL_CONNECTOR_H__
+#define __EROBOT_SERIAL_CONNECTOR_H__
+
+#include <Windows.h>
+#include <string>
+#include <stdio.h>
+#include <iostream>
+
+#define READ_TIMEOUT	500
+
+using namespace std;
+
+namespace reactive {
+	namespace erobot {
+		namespace core {
+
+			class ERobotSerialConnector {
+
+			private :
+				HANDLE	hComm;
+				bool	_bInited;
+				int		_fd;
+				string	_baseComPort;
+				string  _bodyComPort;
+								
+			public :			
+				ERobotSerialConnector();
+				virtual ~ERobotSerialConnector();
+
+				void setup(string portName, int baudrate);
+
+				bool writeBytes(unsigned char* buffer, int length);
+				int readBytes(unsigned char* buffer, int length);
+
+				void resetConnection();
+			};
+		}
+	}
+}
+
+#endif /* __EROBOT_SERIAL_CONNECTOR_H__ */

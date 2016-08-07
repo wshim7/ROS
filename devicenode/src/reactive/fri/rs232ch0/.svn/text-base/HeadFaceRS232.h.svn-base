@@ -1,0 +1,41 @@
+#ifndef __HEADFACE_RS232_H__
+#define __HEADFACE_RS232_H__
+
+
+#include "FRI_RS232.h"
+
+class HeadFaceRS232
+{
+public:
+
+	HeadFaceRS232(void);
+	~HeadFaceRS232(void);
+
+	int sendMessageToHeadface( struct Fri_Headface_Cmdfifo *p_FriHeadfaceCmdfifo );
+	
+private:
+
+	string TTY_HEADFACE;
+	static const int BAUD_RATE_HEADFACE	=9600;
+	static const int SND_BUFFER_HEADFACE_SIZE = 50;
+	static const int HEADFACE_PACKETSIZE = 6 ;
+	static const int HEADFACE_PACKETSIZE_POLOLU = 4 ;
+	static unsigned short TargetMappingTable[181];
+
+	int sendPacketMoveAbsolutePositionSerial(struct Fri_Headface_Cmdfifo *p_FriHeadfaceCmdfifo);
+	int sendPacketMoveAbsolutePositionPololu(struct Fri_Headface_Cmdfifo *p_FriHeadfaceCmdfifo);
+	unsigned char rs232_snd_buffer_headface[SND_BUFFER_HEADFACE_SIZE];
+
+	static const unsigned char friheadface_motorCmd_MSG_SPEED  = 0;
+	static const unsigned char friheadface_motorCmd_MSG_DEGREE = 1;
+
+	Serial* serial;
+
+	int m_typeofDevice;
+	CRITICAL_SECTION  critSecFace; 
+
+
+	
+};
+
+#endif

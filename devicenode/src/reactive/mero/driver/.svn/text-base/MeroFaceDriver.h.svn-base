@@ -1,0 +1,148 @@
+/*
+ * MeroFaceDriver.h
+ *
+ *  Created on: 2014. 6. 2.
+ *      Author: msyoo
+ */
+
+#ifndef MEROFACEDRIVER_H_
+#define MEROFACEDRIVER_H_
+
+#include <Windows.h>
+//#include <process.h>
+#include <string>
+#include <queue>
+#include <boost/thread/thread.hpp>
+
+#include <reactive/mero/utility/MeroFunctionFactory.h>
+#include <reactive/mero/driver/MotorDefinition.h>
+
+
+#include <reactive/mero/driver/RS232.h>
+#define MOTOR_PULSE_PER_DEGREE_1512 9.95
+#define MOTOR_PULSE_PER_DEGREE_2619 19.91
+
+
+using namespace std;
+using namespace MOTOR;
+
+namespace reactive {
+namespace mero {
+namespace driver {
+
+
+
+class MeroFaceDriver {
+public:
+	MeroFaceDriver();
+	virtual ~MeroFaceDriver();
+
+	static MeroFaceDriver* getInstance();
+
+	void initFace();
+	int moveAbsolutePosition(int motorID, double position,  int speed);
+
+	Encoder Board1Enc();
+	void Board1Enc(Encoder val);
+	Encoder Board2Enc();
+	void Board2Enc(Encoder val);
+	Encoder Board3Enc();
+	void Board3Enc(Encoder val);
+	Encoder Board4Enc();
+	void Board4Enc(Encoder val);
+	Encoder Board5Enc();
+	void Board5Enc(Encoder val);
+	Encoder Board6Enc();
+	void Board6Enc(Encoder val);
+
+private:
+
+	UINT m_nTimerID;
+	static void CALLBACK TimeProc(UINT m_nTimerID, UINT uiMsg, DWORD dwUser, DWORD dw1, DWORD d2);
+
+	MeroFunctionFactory* mff;
+
+	RS232 serial;
+	string comport;
+	static const int BAUD_RATE_FACE	= 115200;
+	static const int SND_BUFFER_FACE_SIZE = 50;
+	static const int FACE_PACKETSIZE = 6 ;
+
+	CRITICAL_SECTION motor_command_cs;
+	Encoder board1Enc, board2Enc, board3Enc, board4Enc, board5Enc, board6Enc;
+	static queue<CH_Degree> m_eybrow_UD, m_eybrow_CW,  m_eyelid_R_UD, m_eyelid_L_UD, m_eyelid_Rot_CW, m_pupil_UD, m_pupil_LR, m_lip_UP_CW, m_lip_LO_CW, m_lip_CE_WP;
+
+	static double S_Eyebrow_CH1Degree;
+	static double S_Eyebrow_CH2Degree;
+	static int S_Eyebrow_CH1speed;
+	static int S_Eyebrow_CH2speed;
+
+	static double S_Pupil_CH1Degree;
+	static double S_Pupil_CH2Degree;
+	static int S_Pupil_CH1speed;
+	static int S_Pupil_CH2speed;
+
+	static double S_EyelidLR_CH1Degree;
+	static double S_EyelidLR_CH2Degree;
+	static int S_EyelidLR_CH1speed;
+	static int S_EyelidLR_CH2speed;
+
+	static double S_EyelidR_CH1Degree;
+	static double S_EyelidR_CH2Degree;
+	static int S_EyelidR_CH1speed;
+	static int S_EyelidR_CH2speed;
+
+	static double S_LipUL_CH1Degree;
+	static double S_LipUL_CH2Degree;
+	static int S_LipUL_CH1speed;
+	static int S_LipUL_CH2speed;
+
+	static double S_LipC_CH1Degree;
+	static double S_LipC_CH2Degree;
+	static int S_LipC_CH1speed;
+	static int S_LipC_CH2speed;
+
+	bool m_isFaceThread;
+	boost::thread		m_Face_Thread;
+
+	int moveAbsfunc(bool period, MOTOR::BOARD_ID id, Encoder & motorEncoder, double CH1Degree, double CH2Degree);
+	void runFaceThread();
+	void startFaceThread();
+
+
+	bool motorOn(MOTOR::BOARD_ID ID);
+	bool motorOff(MOTOR::BOARD_ID ID);
+	bool setMotorSpeed(MOTOR::BOARD_ID id, int ch1Speed, int ch2Speed);
+
+	bool writeToMotor(MOTOR::BOARD_ID ID, string command);
+	string writeToMotorwithAck(MOTOR::BOARD_ID ID, string command);
+	string readFromMotor();
+	string motorBoardValueReset(MOTOR::BOARD_ID ID);
+	bool encoderValueChk(MOTOR::BOARD_ID ID, Encoder& values);
+	bool compareEncoderCHValue(MOTOR::MOTOR_CH ch, double thresholdDegree, Encoder &preEncoder, Encoder &curEncoder);
+
+	void moveOneMotor(MOTOR::BOARD_ID id, MOTOR::MOTOR_CH ch, double degree );
+	void chkMotorLimitModiBoardMotor1512(MOTOR::BOARD_ID id,  double moveDegree);
+	void moveOneMotorInit(MOTOR::BOARD_ID id, MOTOR::MOTOR_CH ch);
+	bool setComplianceAll(int val);
+	bool setCompliance(MOTOR::BOARD_ID id, int val);
+
+	void chkMotorLimitLipUL();
+	void chkMotorLimitLipLR(double moveDegree, Encoder &limitValue);
+	void chkLipLimitLR();
+	void chkLipLimitCh(MOTOR::BOARD_ID id, MOTOR::MOTOR_CH ch, double moveDegree, Encoder &lowEncoder);
+	void chkLimitMotor1512All();
+	void chkLimitMotor2619All();
+
+	void moveBoardMotorinThread( MOTOR::BOARD_ID id, queue<CH_Degree>& CH1Queue, queue<CH_Degree>& CH2Queue, Encoder &boardEncoder, double& ch1Degree, double& ch2Degree, int& ch1speed, int& ch2speed );
+	void chkQueue( queue<CH_Degree> &CHQueue, double &chDegree, int &speed );
+
+	string motorIDToString( MOTOR::BOARD_ID ID );
+};
+
+
+
+} /* namespace driver */
+} /* namespace mero */
+} /* namespace reactive */
+#endif /* MEROFACEDRIVER_H_ */

@@ -1,0 +1,53 @@
+#ifndef __MERO_TOUCH_DRIVER_H__
+#define __MERO_TOUCH_DRIVER_H__
+
+#include <stdio.h>
+#include <iostream>
+#include <pthread.h>
+#include <string.h>
+
+#include <reactive/mero/MeroDefinition.h>
+#include <reactive/mero/utility/MeroFunctionFactory.h>
+#include <reactive/mero/driver/MeroLEDTouchConnector.h>
+
+using namespace std;
+
+namespace reactive {
+	namespace mero {
+		namespace driver {
+			class MeroTouchDriver {
+			
+			private :
+				unsigned short	_this_touch_data[MERO_TOUCH_DATACOUNT];
+//				mutable		CRITICAL_SECTION	comunicate;
+
+				static pthread_mutex_t __comunicate_mutex;
+
+				MeroFunctionFactory* utility;
+				MeroLEDTouchConnector* connector;
+			
+			public :
+				MeroTouchDriver();
+				virtual ~MeroTouchDriver();
+
+				static MeroTouchDriver* getInstance();
+
+				void checkTouchButtonCommandPacket(unsigned char command, unsigned char* buffer);
+				void addTouchButtonCommandPacket(unsigned char command, unsigned char* buffer, const int startIndex);
+				void addTouchButtonErrorPacket(unsigned char command, unsigned char* buffer, const int touchId, const int startIndex);
+				int parseAndSetTouchButtonDataPacket(int dataPacketSize, unsigned char* dataPacket);
+				int parseAndSetTouchButtonDataPacket(int dataPacketSize, unsigned char* dataPacket, const int startIndex);
+				int parseAndSetTouchErrorDataPacket(int dataPacketSize, unsigned char* dataPacket);
+
+				void getTouchButtonValue(unsigned short *data, int nDataSize);
+				bool isTouchButtonPacket(unsigned char* buffer, const int startIndex);
+				bool isTouchErrorPacket(unsigned char* buffer);
+				void updateMeroTouch();
+				int detectingError(int touchID);
+
+			};
+		}
+	}
+}
+
+#endif /* __MERO_TOUCH_DRIVER_H__ */

@@ -1,0 +1,637 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>roscir@roscir</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.cdt.make.core.makeBuilder</name>
+			<triggers>clean,full,incremental,</triggers>
+			<arguments>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>
+					<value>clean</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableCleanBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.append_environment</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.stopOnError</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enabledIncrementalBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.command</key>
+					<value>/usr/bin/make</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.contents</key>
+					<value>org.eclipse.cdt.make.core.activeConfigSettings</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.target.inc</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.arguments</key>
+					<value>-j4</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildLocation</key>
+					<value>/home/swg/catkin_ws/src/roscir</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.useDefaultBuildCmd</key>
+					<value>false</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.environment</key>
+					<value>VERBOSE=1|CMAKE_NO_VERBOSE=1|</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableFullBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.target.auto</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableAutoBuild</key>
+					<value>false</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.target.clean</key>
+					<value>clean</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.fullBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildArguments</key>
+					<value></value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.build.location</key>
+					<value>/home/swg/catkin_ws/src/roscir</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.autoBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.core.errorOutputParser</key>
+					<value>org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GLDErrorParser;</value>
+				</dictionary>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.make.core.ScannerConfigBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+		<nature>org.eclipse.cdt.make.core.makeNature</nature>
+		<nature>org.eclipse.cdt.make.core.ScannerConfigNature</nature>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>[Subprojects]</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Subprojects]/gtest</name>
+			<type>2</type>
+			<location>/usr/src/gtest</location>
+		</link>
+		<link>
+			<name>[Targets]</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] arm_tester</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] arm_tester/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] arm_tester/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] arm_tester/Source Files/arm_tester.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/tests/arm_tester.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[exe] arm_tester/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] arm_tester/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] arm_tester/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] arm_tester/Object Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] gyro_tester</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] gyro_tester/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] gyro_tester/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] gyro_tester/Source Files/gyro_tester.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/tests/gyro_tester.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[exe] gyro_tester/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] gyro_tester/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] gyro_tester/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] gyro_tester/Object Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] led_tester</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] led_tester/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] led_tester/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] led_tester/Source Files/LedTester.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/tests/LedTester.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[exe] led_tester/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] led_tester/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] led_tester/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] led_tester/Object Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] pantilt_tester</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] pantilt_tester/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] pantilt_tester/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] pantilt_tester/Source Files/pantilt_tester.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/tests/pantilt_tester.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[exe] pantilt_tester/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] pantilt_tester/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] pantilt_tester/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] pantilt_tester/Object Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/Config.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/env/Config.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/ParseException.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/exception/ParseException.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/TimeoutException.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/exception/TimeoutException.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/ArrayOutOfBoundException.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/exception/ArrayOutOfBoundException.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/ConnectException.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/exception/ConnectException.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/NullPointerException.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/exception/NullPointerException.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/IOException.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/exception/IOException.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/FileNotFoundException.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/exception/FileNotFoundException.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/NoSuchElementException.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/exception/NoSuchElementException.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/NumberFormatException.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/exception/NumberFormatException.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/Exception.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/exception/Exception.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/BatteryData.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/data/BatteryData.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/PanTiltPosition.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/data/PanTiltPosition.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/PsdData.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/data/PsdData.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/RollBendPosition.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/data/RollBendPosition.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/GyroData.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/data/GyroData.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/UltrasonicData.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/data/UltrasonicData.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/WheelEncoderData.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/data/WheelEncoderData.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/ArmData.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/data/ArmData.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/TouchButtonData.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/data/TouchButtonData.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/CHeadFaceClient.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/client/CHeadFaceClient.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/CPsdClient.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/client/CPsdClient.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/CWheelClient.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/client/CWheelClient.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/DeviceClient.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/client/DeviceClient.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/CGyroClient.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/client/CGyroClient.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/CArmClient.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/client/CArmClient.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/CPanTiltClient.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/client/CPanTiltClient.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/CLightEmittingDiodeClient.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/client/CLightEmittingDiodeClient.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/CWheelEncoderClient.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/client/CWheelEncoderClient.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Source Files/CUltraClient.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/roscir/device/client/CUltraClient.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] roscir/Object Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] serial_tester</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] serial_tester/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] serial_tester/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] serial_tester/Source Files/ofwriter.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/tests/ofwriter.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[exe] serial_tester/Source Files/ofSerial.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/tests/ofSerial.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[exe] serial_tester/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] serial_tester/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] serial_tester/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] serial_tester/Object Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] wheel_tester</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] wheel_tester/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] wheel_tester/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] wheel_tester/Source Files/wheel_tester.cpp</name>
+			<type>1</type>
+			<location>/home/swg/catkin_ws/src/roscir/src/tests/wheel_tester.cpp</location>
+		</link>
+		<link>
+			<name>[Targets]/[exe] wheel_tester/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] wheel_tester/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] wheel_tester/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[exe] wheel_tester/Object Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] gtest</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] gtest/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] gtest/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] gtest/Source Files/gtest-all.cc</name>
+			<type>1</type>
+			<location>/usr/src/gtest/src/gtest-all.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] gtest/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] gtest/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] gtest/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] gtest/Object Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] gtest_main</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] gtest_main/</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] gtest_main/Source Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] gtest_main/Source Files/gtest_main.cc</name>
+			<type>1</type>
+			<location>/usr/src/gtest/src/gtest_main.cc</location>
+		</link>
+		<link>
+			<name>[Targets]/[lib] gtest_main/Header Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] gtest_main/CMake Rules</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] gtest_main/Resources</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>[Targets]/[lib] gtest_main/Object Files</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>

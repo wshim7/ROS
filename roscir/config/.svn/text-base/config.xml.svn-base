@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config SYSTEM "config.dtd">
+
+<config>
+    <!-- ========================================================== -->
+    <!-- Initial Variables for Common Classes.. -->
+    <!-- ========================================================== -->
+    <!-- Client I/O Device Type : 1=RTAI, 2=Simulator, 3=TCPStub, 4=UPnPCP -->
+    <param name="CLIENT_DEVICE_TYPE" value="3"/>
+    <param name="ULTRASONIC_DEVICE_TYPE" value="3"/>
+    <param name="ULTRASONIC_SERVER_IP" value="127.0.0.1"/>
+    <param name="ULTRASONIC_SERVER_PORT" value="5000"/>
+    <!-- Server I/O Device Type : 1=RTAI, 2=3DSimulator 6=MOCK-->
+    <param name="SERVER_DEVICE_TYPE" value="6"/>
+    <!-- Robot Type : 1=TRot/Infotainment, 2=HRobot, 3=FRI, 4=KIBO, 5:Engkey, 6:MOCK, 7:Mero, 8:MeroS, 11:E-Robot-->
+    <param name="ROBOT_TYPE" value="11"/>
+    <param name="SIMULATOR_IP"   value="161.122.112.50"/>
+    <!--param name="SIMULATOR_PORT" value="8000"/-->
+    <param name="SIMULATOR_PORT" value="11111"/>
+
+	<!--E-robot -->
+	<param name="E-ROBOT_COM_PORT_BASE" value="COM3"/>
+    <param name="E-ROBOT_COM_PORT_BODY" value="COM4"/>
+    <param name="E-ROBOT_COM_PORT_SENSOR" value="COM5"/>
+    <param name="E-ROBOT_COM_PORT_TOUCH_LED" value="COM6"/>
+	<param name="GYRO_COM_PORT" value="COM7"/>
+    <param name="GYRO_EBaudrate" value="115200"/>
+
+	<!--  Mero  -->
+	<param name="MERO_NECK_COM_PORT" value="COM3"/>
+	
+	<!-- behavior expression -->
+	<param name="PANTILT.SPEED.LIMIT" value="25"/>
+	
+</config>

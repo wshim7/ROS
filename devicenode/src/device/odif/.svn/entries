@@ -1,0 +1,46 @@
+10
+
+dir
+1175
+svn://203.229.160.125/cir2014/devicenode/src/device/odif
+svn://203.229.160.125/cir2014
+
+
+
+2014-09-03T08:01:07.770507Z
+1172
+msyoo
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+5d11d082-fbeb-3f47-94fe-e674065325d5
+
+arm
+dir
+
+headface
+dir
+
+led
+dir
+
+pantilt
+dir
+
+rollbend
+dir
+
+wheel
+dir
+

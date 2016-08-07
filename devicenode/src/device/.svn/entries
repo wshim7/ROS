@@ -1,0 +1,71 @@
+10
+
+dir
+1175
+svn://203.229.160.125/cir2014/devicenode/src/device
+svn://203.229.160.125/cir2014
+
+
+
+2014-09-03T08:01:07.770507Z
+1172
+msyoo
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+5d11d082-fbeb-3f47-94fe-e674065325d5
+
+DeviceServerDefinition.h
+file
+
+
+
+
+2014-02-14T06:34:22.290000Z
+704da4f4316f43f8a0134931d5b9eebf
+2014-02-13T09:38:45.807268Z
+262
+msyoo
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1838
+
+idif
+dir
+
+odif
+dir
+
+server
+dir
+

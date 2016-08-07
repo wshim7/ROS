@@ -1,0 +1,60 @@
+#include "WheelEncoderHandler.h"
+
+using namespace cir::devicenode;
+
+WheelEncoderHandler::WheelEncoderHandler() {
+	_wheelEncoderServerProxy = CWheelEncoderServerProxy::getInstance();
+	this->_WHEEL_ENCODER_THREAD_FLAG = false;
+	initHandler();
+	this->_this_thread = boost::thread(boost::bind(&WheelEncoderHandler::wheelEncoderPublishThread, this));
+}
+
+WheelEncoderHandler::~WheelEncoderHandler() {
+	this->_WHEEL_ENCODER_THREAD_FLAG = false;
+	this->_this_thread.join();
+	ROS_DEBUG("[WheelEncoderHandler] closed... ");
+}
+
+void WheelEncoderHandler::initHandler() {
+	//this->_wheelEncoderServiceServer = this->_nodeHandle.advertiseService("/DeviceNode/WheelEncoderService", &WheelEncoderHandler::wheelEncoderServiceCallback, this);
+	//ROS_INFO("WheelEncoder handler created - /DeviceNode/WheelEncoderService");
+	this->_wheelEncoderPublisher = this->_nodeHandle.advertise<cir_msgs::Device_WheelEncoder_Msg>("/DeviceNode/WheelEncoder/data", 1000);
+	ROS_INFO("WheelEncoderHandler handler created - /DeviceNode/WheelEncoder/data");
+}
+
+bool WheelEncoderHandler::wheelEncoderServiceCallback(cir_msgs::Device_WheelEncoder_Srv::Request &request, cir_msgs::Device_WheelEncoder_Srv::Response &response) {
+
+	string command = request.command;
+
+	if(command == COMMAND_WHEEL_ENCODER_READ_DATA) {
+
+		CWheelEncoderData returnData = _wheelEncoderServerProxy->readData(1);
+
+		response.msg.x = returnData.getX();
+		response.msg.y = returnData.getY();
+		response.msg.t = returnData.getTheta();
+		return true;
+	} else {
+		cout << "[WheelEncoderHandler] unrecognized command. " << endl;
+	}
+	return false;
+}
+
+void WheelEncoderHandler::wheelEncoderPublishThread() {
+	this->_WHEEL_ENCODER_THREAD_FLAG = true;
+	ros::Rate loop_rate(10);
+
+	while( ros::ok() && this->_WHEEL_ENCODER_THREAD_FLAG ) {
+
+		cir_msgs::Device_WheelEncoder_Msg message;
+
+		CWheelEncoderData data = _wheelEncoderServerProxy->readData(1);
+		message.x = data.getX();
+		message.y = data.getY();
+		message.t = data.getTheta();
+		this->_wheelEncoderPublisher.publish(message);
+
+		ros::spinOnce();
+		loop_rate.sleep();
+	}
+}

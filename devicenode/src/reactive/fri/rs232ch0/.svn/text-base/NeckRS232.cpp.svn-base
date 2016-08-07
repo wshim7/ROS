@@ -1,0 +1,482 @@
+#include "NeckRS232.h"
+#include <reactive/fri/include/RT_FriNeck.h>
+#include <roscir/env/Config.h>
+#include "SERIAL_ERROR.h"
+#include <stdio.h>
+
+NeckRS232* NeckRS232::thisInstance = 0;
+
+
+NeckRS232::NeckRS232(void)
+{
+	CConfig* config = CConfig::getInstance();
+	string comPort ="";
+	comPort = config->getParamValue("FRI_NECK_COM_PORT");
+	if(comPort.empty()){
+		TTY_NECK = "COM3";
+	}else{
+		TTY_NECK = comPort;
+	}
+	cout<<"Neck Com Port: " << TTY_NECK << endl;
+
+	int encoderFactor = config->getParamValueInt("NECK_DEVICE_TYPE");
+
+	if(encoderFactor == -1){
+		encoderFactor = 0;
+	}
+
+	if(encoderFactor == 0){
+		m_encoderSacle = 100.0 /35.0; 
+	}else if(encoderFactor == 1){
+		m_encoderSacle = 1023.0/300.0;
+	}else{
+		m_encoderSacle = 100.0 /35.0; 
+	}
+
+	memset( rs232_snd_data, 0, sizeof(unsigned char)*NeckRS232::SND_BUFFER_NECK_SIZE );
+	serial.setup(TTY_NECK, NeckRS232::BAUD_RATE_NECK);
+	serial.flush();
+
+	for( int i = 0 ; i < 4 ; i++)
+		MotorPos[i] = 0;
+
+	InitializeCriticalSection(&critSecPanRoll);
+
+	sleepTime =1;
+
+	elsTime = serial.ofGetElapsedTimeMillis();
+
+}
+
+NeckRS232::~NeckRS232(void)
+{
+}
+
+int NeckRS232::send_motorCmdPacket_move2motorsync( struct Fri_Neck_Cmdfifo *p_FriNeckCmdfifo )
+{
+	int LowerDegree1;
+	int UpperDegree1;
+	int LowerSpeed1;
+	int UpperSpeed1;
+	int sum1;
+	int checksum1;
+
+	int SpeedBit4_1;
+	int SpeedBit3_1;
+	int SpeedBit2_1;
+	int SpeedBit1_1;
+
+	int DegreeBit4_1;
+	int DegreeBit3_1;
+	int DegreeBit2_1;
+	int DegreeBit1_1;
+
+	int LowerDegree2;
+	int UpperDegree2;
+	int LowerSpeed2;
+	int UpperSpeed2;
+
+	int SpeedBit4_2;
+	int SpeedBit3_2;
+	int SpeedBit2_2;
+	int SpeedBit1_2;
+
+	int DegreeBit4_2;
+	int DegreeBit3_2;
+	int DegreeBit2_2;
+	int DegreeBit1_2;
+
+	int Bit3_1;
+	int Bit2_1;
+	int Bit1_1;
+	int Bit2_not_1;
+	int Bit1_not_1;
+
+
+	//if(p_FriNeckCmdfifo->motorID[0] == 1) {
+
+		//p_FriNeckencoderShmdata->data[0] = p_FriNeckCmdfifo->position[0];
+		//p_FriNeckencoderShmdata->data[1] = p_FriNeckCmdfifo->position[1];
+
+	//}else if(p_FriNeckCmdfifo->motorID[0] == 3) {
+
+		//p_FriNeckencoderShmdata->data[2] = p_FriNeckCmdfifo->position[0];
+		//p_FriNeckencoderShmdata->data[3] = p_FriNeckCmdfifo->position[1];
+	//}
+
+
+	p_FriNeckCmdfifo->speed[0]=p_FriNeckCmdfifo->speed[0]*9;
+	SpeedBit4_1=(int)(p_FriNeckCmdfifo->speed[0]/16/16/16);
+	SpeedBit3_1=(int)((p_FriNeckCmdfifo->speed[0]-SpeedBit4_1*16*16*16)/16/16);
+	SpeedBit2_1=(int)((p_FriNeckCmdfifo->speed[0]-SpeedBit4_1*16*16-SpeedBit3_1*16*16))/16;
+	SpeedBit1_1=(int)((p_FriNeckCmdfifo->speed[0]-SpeedBit4_1*16*16*16-SpeedBit3_1*16*16-SpeedBit2_1*16));
+
+	LowerSpeed1=SpeedBit1_1+SpeedBit2_1*16;
+	UpperSpeed1=SpeedBit3_1+SpeedBit4_1*16;
+
+	//p_FriNeckCmdfifo->position[0]=p_FriNeckCmdfifo->position[0]*1023.0/300.0;
+	p_FriNeckCmdfifo->position[0]=p_FriNeckCmdfifo->position[0]*m_encoderSacle;
+	DegreeBit4_1=(int)(p_FriNeckCmdfifo->position[0]/16/16/16);
+	DegreeBit3_1=(int)((p_FriNeckCmdfifo->position[0]-DegreeBit4_1*16*16*16)/16/16);
+	DegreeBit2_1=(int)((p_FriNeckCmdfifo->position[0]-DegreeBit4_1*16*16-DegreeBit3_1*16*16))/16;
+	DegreeBit1_1=(int)((p_FriNeckCmdfifo->position[0]-DegreeBit4_1*16*16*16-DegreeBit3_1*16*16-DegreeBit2_1*16));
+
+	LowerDegree1=DegreeBit1_1+DegreeBit2_1*16;
+	UpperDegree1=DegreeBit3_1+DegreeBit4_1*16;
+
+	p_FriNeckCmdfifo->speed[1]=p_FriNeckCmdfifo->speed[1]*9;
+	SpeedBit4_2=(int)(p_FriNeckCmdfifo->speed[1]/16/16/16);
+	SpeedBit3_2=(int)((p_FriNeckCmdfifo->speed[1]-SpeedBit4_2*16*16*16)/16/16);
+	SpeedBit2_2=(int)((p_FriNeckCmdfifo->speed[1]-SpeedBit4_2*16*16-SpeedBit3_2*16*16))/16;
+	SpeedBit1_2=(int)((p_FriNeckCmdfifo->speed[1]-SpeedBit4_2*16*16*16-SpeedBit3_2*16*16-SpeedBit2_2*16));
+
+	LowerSpeed2=SpeedBit1_2+SpeedBit2_2*16;
+	UpperSpeed2=SpeedBit3_2+SpeedBit4_2*16;
+
+
+	//p_FriNeckCmdfifo->position[1]=p_FriNeckCmdfifo->position[1]*1023.0/300.0;
+	p_FriNeckCmdfifo->position[1]=p_FriNeckCmdfifo->position[1]*m_encoderSacle;
+	DegreeBit4_2=(int)(p_FriNeckCmdfifo->position[1]/16/16/16);
+	DegreeBit3_2=(int)((p_FriNeckCmdfifo->position[1]-DegreeBit4_2*16*16*16)/16/16);
+	DegreeBit2_2=(int)((p_FriNeckCmdfifo->position[1]-DegreeBit4_2*16*16-DegreeBit3_2*16*16))/16;
+	DegreeBit1_2=(int)((p_FriNeckCmdfifo->position[1]-DegreeBit4_2*16*16*16-DegreeBit3_2*16*16-DegreeBit2_2*16));
+
+	LowerDegree2=DegreeBit1_2+DegreeBit2_2*16;
+	UpperDegree2=DegreeBit3_2+DegreeBit4_2*16;
+
+	sum1=254+14+131+30+4+p_FriNeckCmdfifo->motorID[0]+p_FriNeckCmdfifo->motorID[1]+LowerDegree1+LowerDegree2+UpperDegree1+UpperDegree2+LowerSpeed1+LowerSpeed2+UpperSpeed1+UpperSpeed2;
+
+	Bit3_1=(int)sum1/16/16;
+	Bit2_1=(int)(sum1-Bit3_1*16*16)/16;
+	Bit1_1=sum1-Bit3_1*16*16-Bit2_1*16;
+	Bit2_not_1=15-Bit2_1;
+	Bit1_not_1=15-Bit1_1;
+	checksum1=Bit2_not_1*16+Bit1_not_1;
+
+	rs232_snd_data[0] = 255;
+	rs232_snd_data[1] = 255;
+	rs232_snd_data[2] = 254; //ID
+	rs232_snd_data[3] = 14;  //length
+	rs232_snd_data[4] = 131;  //Instruction
+	rs232_snd_data[5] = 30; //Address
+	rs232_snd_data[6] = 4; //Data length
+	rs232_snd_data[7] = p_FriNeckCmdfifo->motorID[0]; //First Motor ID
+	rs232_snd_data[8] = LowerDegree1; //1st Degree lower
+	rs232_snd_data[9] = UpperDegree1; //1st Degree upper
+	rs232_snd_data[10] = LowerSpeed1;  //1st Speed lower
+	rs232_snd_data[11] = UpperSpeed1;  //1st Speed upper
+	rs232_snd_data[12] = p_FriNeckCmdfifo->motorID[1]; //Second Motor ID
+	rs232_snd_data[13] = LowerDegree2; //2nd Degree lower
+	rs232_snd_data[14] = UpperDegree2; //2nd Degree upper
+	rs232_snd_data[15] = LowerSpeed2;  //2nd Speed lower
+	rs232_snd_data[16] = UpperSpeed2;  //2nd Speed upper
+	rs232_snd_data[17] = checksum1;
+
+	return serial.writeBytesSleep(rs232_snd_data, sizeof(unsigned char) * 18, 15);
+
+	//rt_spwrite(TTY, &rs232_snd_data[0], sizeof(unsigned char) * 18 );
+
+	//FriNeckReportfifo.status=0;
+	//rtf_put( FRI_NECK_REPORTFIFO, &FriNeckReportfifo, sizeof(struct Fri_Neck_Reportfifo) );
+
+
+}
+
+int NeckRS232::send_motorCmdPacket_movemotor( struct Fri_Neck_Cmdfifo *p_FriPantiltCmdfifo )
+{
+	int LowerDegree;
+	int UpperDegree;
+	int LowerSpeed;
+	int UpperSpeed;
+	int sum;
+	int checksum;
+
+	int SpeedBit4;
+	int SpeedBit3;
+	int SpeedBit2;
+	int SpeedBit1;
+
+	int DegreeBit4;
+	int DegreeBit3;
+	int DegreeBit2;
+	int DegreeBit1;
+
+	int Bit3;
+	int Bit2;
+	int Bit1;
+	int Bit2_not;
+	int Bit1_not;
+
+	p_FriPantiltCmdfifo->speed[0]=p_FriPantiltCmdfifo->speed[0]*9;
+
+	SpeedBit4=(int)(p_FriPantiltCmdfifo->speed[0]/16/16/16);
+	SpeedBit3=(int)((p_FriPantiltCmdfifo->speed[0]-SpeedBit4*16*16*16)/16/16);
+	SpeedBit2=(int)((p_FriPantiltCmdfifo->speed[0]-SpeedBit4*16*16-SpeedBit3*16*16))/16;
+	SpeedBit1=(int)((p_FriPantiltCmdfifo->speed[0]-SpeedBit4*16*16*16-SpeedBit3*16*16-SpeedBit2*16));
+	LowerSpeed=SpeedBit1+SpeedBit2*16;
+	UpperSpeed=SpeedBit3+SpeedBit4*16;
+
+
+	//p_FriPantiltCmdfifo->position[0]=p_FriPantiltCmdfifo->position[0]*1023.0/300.0;
+	p_FriPantiltCmdfifo->position[0]=p_FriPantiltCmdfifo->position[0]*m_encoderSacle;
+	DegreeBit4=(int)(p_FriPantiltCmdfifo->position[0]/16/16/16);
+	DegreeBit3=(int)((p_FriPantiltCmdfifo->position[0]-DegreeBit4*16*16*16)/16/16);
+	DegreeBit2=(int)((p_FriPantiltCmdfifo->position[0]-DegreeBit4*16*16-DegreeBit3*16*16))/16;
+	DegreeBit1=(int)((p_FriPantiltCmdfifo->position[0]-DegreeBit4*16*16*16-DegreeBit3*16*16-DegreeBit2*16));
+	LowerDegree=DegreeBit1+DegreeBit2*16;
+	UpperDegree=DegreeBit3+DegreeBit4*16;
+
+	sum=p_FriPantiltCmdfifo->motorID[0]+7+3+30+LowerDegree+UpperDegree+LowerSpeed+UpperSpeed;
+	Bit3=(int)sum/16/16;
+	Bit2=(int)(sum-Bit3*16*16)/16;
+	Bit1=sum-Bit3*16*16-Bit2*16;
+	Bit2_not=15-Bit2;
+	Bit1_not=15-Bit1;
+	checksum=Bit2_not*16+Bit1_not;
+	
+	
+	rs232_snd_data[0] = 255;
+	rs232_snd_data[1] = 255;
+	rs232_snd_data[2] = p_FriPantiltCmdfifo->motorID[0];
+	rs232_snd_data[3] = 7;
+	rs232_snd_data[4] = 3;
+	rs232_snd_data[5] = 30;
+	rs232_snd_data[6] = LowerDegree;
+	rs232_snd_data[7] = UpperDegree;
+	rs232_snd_data[8] = LowerSpeed;
+	rs232_snd_data[9] = UpperSpeed;
+	rs232_snd_data[10] = checksum;
+	
+	return serial.writeBytesSleep(rs232_snd_data, sizeof(unsigned char) * 11 ,15);
+
+	//rt_spwrite(TTY, &rs232_snd_data[0], sizeof(unsigned char) * 11 );
+
+	//FriNeckReportfifo.status=0;
+	//rtf_put( FRI_NECK_REPORTFIFO, &FriNeckReportfifo, sizeof(struct Fri_Neck_Reportfifo) );
+
+
+}
+
+
+int NeckRS232::sendMessageToNeck( struct Fri_Neck_Cmdfifo *p_FriPantiltCmdfifo )
+{
+	int res=OF_SERIAL_ERROR;
+
+	switch(p_FriPantiltCmdfifo->cmd)
+	{
+
+		case FRI_NECK_CMDFIFO_CMD_MOVEMOTOR:
+			EnterCriticalSection(&critSecPanRoll);
+			res = send_motorCmdPacket_movemotor(p_FriPantiltCmdfifo);
+			Sleep(sleepTime);
+			//cout << "write MOVEMOTOR: "<<  serial.ofGetElapsedTimeMillis() - elsTime << endl;
+			LeaveCriticalSection(&critSecPanRoll);
+			break;
+
+		case FRI_NECK_CMDFIFO_CMD_MOVE2MOTORSYNC:
+			EnterCriticalSection(&critSecPanRoll);
+			res = send_motorCmdPacket_move2motorsync(p_FriPantiltCmdfifo);
+			Sleep(sleepTime);
+			//cout << "write move2motorsync: "<<  serial.ofGetElapsedTimeMillis() - elsTime << endl;
+			LeaveCriticalSection(&critSecPanRoll);
+			break;
+
+	}
+
+	return res;
+
+}
+
+NeckRS232* NeckRS232::getInstance()
+{
+	static NeckRS232 thisInstance;
+	cout << "[NeckRS232.getInstance] : Create Sole Instance(NeckRS232).." << endl;
+	return &thisInstance;
+}
+
+void NeckRS232::getNeckPosition(int id, double& ang1, double &ang2)
+{
+	EnterCriticalSection(&critSecPanRoll);
+
+	double pos1, pos2;
+	
+	if ( id == 1 )// pantilt
+	{
+		pos1 = readMotorPosition(1);
+		pos2 = readMotorPosition(2);
+	} else if ( id == 2 )
+	{
+		pos1 = readMotorPosition(3);
+		pos2 = readMotorPosition(4);
+
+	}
+
+
+	//ang1 = pos1;
+	//ang2 = pos2;
+
+
+
+	ang1 = (300-pos1-pos2)/4.0 ;
+	ang2 = (pos1-pos2)/-2.0;
+	LeaveCriticalSection(&critSecPanRoll);
+
+}
+
+double NeckRS232::readMotorPosition( int motorID )
+{
+	if( motorID < 1 || motorID > 4)
+	{
+
+		printf("MotorID Error");
+
+		return 0;
+
+	}
+	
+	writeGetMotorEncoder(motorID);
+	
+
+	unsigned char readBuffer[16*2];
+	unsigned char tmpBuffer[16];
+
+
+	int nRead  = 0;  // a temp variable to keep count per read
+
+	int readCounter = 0 ;
+
+	int start = serial.ofGetElapsedTimeMillis();
+
+	while( readCounter < 8  )
+	{
+
+		Sleep(2);
+		if(( serial.ofGetElapsedTimeMillis() - start) > NeckRS232::RECEIVE_TIMEOUT	)
+		{
+			printf("########## TIME OUT ERROR ##########\n");
+			
+			serial.flush();
+			Sleep(sleepTime);
+			//cout << "writeTIME OUT ERROR########################: "<<  serial.ofGetElapsedTimeMillis() - elsTime << endl;
+			
+			//writeGetMotorEncoder(motorID);
+			//readCounter = 0 ;
+
+			//start = serial.ofGetElapsedTimeMillis();
+			return MotorPos[motorID-1];
+		}
+		
+		nRead = serial.readBytes(tmpBuffer, 8);
+		Sleep(sleepTime);
+		
+//		printf("******** readed = %d\n", nRead);
+//		Sleep(500);
+
+		if ( nRead > 0 )
+		{
+			memcpy(&readBuffer[readCounter], tmpBuffer, nRead);
+			readCounter = readCounter + nRead;
+		}
+		
+		
+	}
+	//cout << "read: "<<  serial.ofGetElapsedTimeMillis() - elsTime << endl;
+
+	short data=0;
+
+	data = readBuffer[5]; //+255;
+	data += (readBuffer[6] << 8)  ; //<< 8;
+
+	double ang =data*300.0/1023.0; //data*300.0/1023.0;
+	//printf("MOTOR ID = %d \t\t Position = %f\n", motorID, ang);	
+	
+	MotorPos[motorID-1] = ang;
+	return ang;
+
+
+}
+
+void NeckRS232::writeGetMotorEncoder( int motorID )
+{
+	// first motor
+	rs232_snd_data[0] = 0xff;
+	rs232_snd_data[1] = 0xff;
+	rs232_snd_data[2] = motorID;
+	rs232_snd_data[3] = 0x04;
+	rs232_snd_data[4] = 0x02;
+	rs232_snd_data[5] = 0x24;
+	rs232_snd_data[6] = 0x02;
+	rs232_snd_data[7] = 0xd3 - motorID;
+	//rs232_snd_data[8] = 0x0d;
+	//rs232_snd_data[9] = 0x0a;
+
+
+	int res = serial.writeBytesSleep(rs232_snd_data, sizeof(unsigned char) * 8 , 15);
+	Sleep(sleepTime);
+	//cout << "write get: "<<  serial.ofGetElapsedTimeMillis() - elsTime << endl;
+	// printf("Writed %d\n", res);
+}
+
+int NeckRS232::setMotorCompliance( int option )
+{
+	// first motor
+	rs232_snd_data[0] = 0xff;
+	rs232_snd_data[1] = 0xff;
+	rs232_snd_data[2] = 0xfe;
+	rs232_snd_data[3] = 0x07;
+	rs232_snd_data[4] = 0x03;
+	rs232_snd_data[5] = 0x1a;
+	rs232_snd_data[6] = 0x01;
+	rs232_snd_data[7] = 0x01;
+
+	switch(option){
+		case 1:
+			rs232_snd_data[8] = 0x02;
+			rs232_snd_data[9] = 0x02;
+			rs232_snd_data[10] = 0xd7;
+			break;
+		case 2:
+			rs232_snd_data[8] = 0x04;
+			rs232_snd_data[9] = 0x04;
+			rs232_snd_data[10] = 0xd3;
+			break;
+		case 3:
+			rs232_snd_data[8] = 0x08;
+			rs232_snd_data[9] = 0x08;
+			rs232_snd_data[10] = 0xcb;
+			break;
+		case 4:
+			rs232_snd_data[8] = 0x10;
+			rs232_snd_data[9] = 0x10;
+			rs232_snd_data[10] = 0xbb;
+			break;
+		case 5:
+			rs232_snd_data[8] = 0x20;
+			rs232_snd_data[9] = 0x20;
+			rs232_snd_data[10] = 0x9b;
+			break;
+		case 6:
+			rs232_snd_data[8] = 0x40;
+			rs232_snd_data[9] = 0x40;
+			rs232_snd_data[10] = 0x5b;
+			break;
+		case 7:
+			rs232_snd_data[8] = 0x80;
+			rs232_snd_data[9] = 0x80;
+			rs232_snd_data[10] = 0xdb;
+			break;
+
+		default:
+			cout << "[Info] Invalid Motor Compliance: "<<  option << endl;
+			return -1;
+			break;
+	}
+
+
+	int res = serial.writeBytesSleep(rs232_snd_data, sizeof(unsigned char) * 11 , 15);
+	cout << "[Info] Set Motor Compliance: "<<  option << endl;
+	Sleep(1);
+
+	return 1;
+
+}
